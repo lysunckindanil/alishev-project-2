@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Person</title>
+</head>
+<body>
+<main>
+    <article>
+        <p th:text="${person.getName()} + ', ' + ${person.getBirthday()}"></p>
+        <div th:if="${books.size()==0}">
+            <p>Человек пока не взял ни одной книги</p>
+        </div>
+        <div th:if="${books.size()!=0}">
+            <p><strong>Книги</strong></p>
+            <p th:each="book : ${books}"
+               th:style="${book.isOutOfTerm()?'color: red':''}"
+               th:text="${book.getName()} + ', ' + ${book.getAuthor()} +', ' + ${book.getYear()}"></p>
+        </div>
+        <br>
+        <hr>
+        <form method="get" th:action="@{/people/{id}/edit (id=${person.getPerson_id()})}">
+            <button type="submit">Edit person</button>
+        </form>
+        <br>
+        <form method="post" th:action="@{/people/{id}/delete (id=${person.getPerson_id()})}">
+            <button type="submit">Delete person</button>
+        </form>
+    </article>
+</main>
+</body>
+</html>

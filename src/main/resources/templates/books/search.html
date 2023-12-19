@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Search books</title>
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+            crossorigin="anonymous"
+    />
+    <script src="https://code.jquery.com/jquery-3.3.1.js"
+            integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+</head>
+<body class="bg-dark">
+<article class="container w-50 mt-5">
+    <section class="row g-3 mb-3">
+        <h1 class="h1 text-light">Поиск книг</h1>
+        <input
+                type="text"
+                class="form-control form-control-lg"
+                id="input_element"
+                placeholder="Введите название"
+        />
+        <button
+                type="button"
+                id="search_button"
+                class="btn btn-lg btn-outline-primary"
+        >
+            Найти книги
+        </button>
+    </section>
+
+    <section>
+        <div id="list_element"></div>
+    </section>
+</article>
+<script>
+    const searchButton = document.getElementById("search_button");
+    const inputElement = document.getElementById("input_element");
+    const listElement = document.getElementById("list_element");
+
+    function render(books) {
+        listElement.innerHTML = "";
+        if (books.length > 0) {
+            for (let i = 0; i < books.length; i++) {
+                listElement.insertAdjacentHTML("afterbegin", getTemplate(books[i]['book_name'],
+                    books[i]['book_id'], books[i]['author'], books[i]['person_id']));
+            }
+        } else {
+            listElement.insertAdjacentHTML('afterbegin', '<p style="color: white">Книг не найдено</p>')
+        }
+    }
+
+    function getTemplate(book_name, book_id, author_name, person_id) {
+        if (person_id === -1) {
+            return `
+                <div class="card text-bg-dark border-light mt-2">
+                  <div class="card-body">
+                  <a href="/books/${book_id}" class="card-text">${book_name}</a>
+                  <p>${author_name}</p>
+                   <p>Книга свободна</p>
+                  </div>
+                </div>
+                `
+        } else {
+            return `
+                <div class="card text-bg-dark border-light mt-2">
+                  <div class="card-body">
+                  <a href="/books/${book_id}" class="card-text">${book_name}</a>
+                  <p>${author_name}</p>
+                   <a href="/people/${person_id}" class="card-text">Книга занята</a>
+                  </div>
+                </div>
+                `
+        }
+    }
+
+    searchButton.onclick = function () {
+        if (inputElement.value.length === 0) return;
+        $.ajax({
+            url: '/books/search',
+            method: 'post',
+            dataType: 'html',
+            data: {string: inputElement.value},
+            success: function (data) {
+                render(JSON.parse(data));
+                inputElement.value = "";
+            }
+        });
+    };
+</script>
+</body>
+</html>

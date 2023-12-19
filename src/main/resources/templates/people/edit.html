@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit person</title>
+    <style>
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<main>
+    <article>
+        <form th:action="@{/people/{id}/edit (id=${person.getPerson_id()})}" method="post" th:object="${person}">
+            <label for="name">Person name</label>
+            <input th:field="*{name}" type="text" id="name">
+            <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+            <br>
+            <label for="birthday">Birthday</label>
+            <input th:field="*{birthday}" type="date" id="birthday" required>
+            <br>
+            <button type="submit">Edit person</button>
+        </form>
+    </article>
+</main>
+</body>
+</html>
